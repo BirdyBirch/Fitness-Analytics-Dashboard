@@ -476,7 +476,7 @@ with chart_col2:
     """, unsafe_allow_html=True)
     
     # Create activity type distribution based on your actual Garmin data
-    activity_types = ['Indoor Cycling', 'Running', 'Strength Training', 'Walking/Hiking', 'Yoga']
+    activity_types = ['Indoor Cycling', 'Running', 'Strength', 'Hiking  ', 'Yoga']
     activity_counts = [12, 6, 3, 2, 3]  # Based on your actual data
     activity_colors = ['#7B1FA2', '#E91E63', '#F57C00', '#2E7D32', '#1976D2']
     
@@ -488,35 +488,38 @@ with chart_col2:
         marker_colors=activity_colors,
         textinfo='percent',  # Show only percent in chart
         textfont=dict(size=13, color='white'),
-        hovertemplate='<b>%{label}</b><br>Count: %{value}<br>Percentage: %{percent}<extra></extra>',
-        domain=dict(x=[0.0, 0.7])  # Shift pie chart left to balance with legend
+        hovertemplate='<b>%{label}</b><br>Count: %{value}<br>Percentage: %{percent}<extra></extra>'
+        # Removed domain to use full width
     )])
-
     fig_activities.update_layout(
         height=350,
         showlegend=True,
         plot_bgcolor='#181920',
         paper_bgcolor='#181920',
         font=dict(size=12, family="Inter", color="white"),
-        margin=dict(t=40, b=40, l=40, r=60),  # Match left chart margin
+        margin=dict(t=40, b=70, l=40, r=40),
         legend=dict(
-            orientation="v",
-            yanchor="middle",
-            y=0.5,
-            xanchor="left",
-            x=0.65,  # Move legend box much further left
-            font=dict(size=13, color="white"),
-            bgcolor="rgba(24,25,32,0.98)",
-            bordercolor="#333",
+            orientation="h",
+            yanchor="top",  # Nur dieser bleibt
+            y=-0.15,
+            xanchor="center",
+            x=0.5,
+            # yanchor='middle',  # Entferne diese Zeile
+            bgcolor='rgba(24,25,32,0.95)',
+            bordercolor='rgba(255, 255, 255, 0.2)',
             borderwidth=1,
-            itemsizing="trace",
-            entrywidth=120,
-            entrywidthmode="pixels"
+            font=dict(
+                size=11,
+                color='white'
+            ),
+            itemsizing='constant',
+            itemwidth=30,
+            tracegroupgap=1,
+            itemclick=False,
+            itemdoubleclick=False
         )
     )
-
     st.plotly_chart(fig_activities, use_container_width=True)
-
 # Add Activity Timeline Chart
 st.markdown("""
 <div class="chart-container" style="background: #181920;">
@@ -627,20 +630,20 @@ fig_timeline.update_yaxes(title_font=dict(size=12, color="white"), tickfont=dict
 # Update axes
 fig_timeline.update_xaxes(
     title_text="Date",
-    title_font=dict(size=12, color="#4a5568"),
-    tickfont=dict(color="#4a5568")
+    title_font=dict(size=12, color="white"),
+    tickfont=dict(color="white")
 )
 fig_timeline.update_yaxes(
     title_text="Duration (minutes)",
     secondary_y=False,
-    title_font=dict(size=12, color="#4a5568"),
-    tickfont=dict(color="#4a5568")
+    title_font=dict(size=12, color="white"),
+    tickfont=dict(color="white")
 )
 fig_timeline.update_yaxes(
     title_text="Calories Burned",
     secondary_y=True,
-    title_font=dict(size=12, color="#4a5568"),
-    tickfont=dict(color="#4a5568")
+    title_font=dict(size=12, color="white"),
+    tickfont=dict(color="white")
 )
 
 # Display the Workout Intensity & Performance Timeline chart
@@ -732,7 +735,7 @@ with tab1:
                     color=sleep_quality,
                     colorscale='Viridis',
                     showscale=True,
-                    colorbar=dict(title=dict(text="Quality %", font=dict(size=12, color="#2d3748")))
+                    colorbar=dict(title=dict(text="Quality %", font=dict(size=12, color="white")))
                 )
             ),
             row=2, col=2

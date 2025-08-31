@@ -7,7 +7,7 @@ from datetime import datetime, timedelta
 import numpy as np
 import os
 
-# Page configuration - MUST be first Streamlit command
+# Page configuration
 st.set_page_config(
     page_title="Fitness Analytics Dashboard",
     page_icon="💪",
@@ -191,27 +191,27 @@ def create_kpi_card(title, value, delta, color_theme="pink", icon_name="monitori
 def load_data():
     """Load sample data for demonstration with realistic 2025 date range"""
     np.random.seed(42)
-    # June 1, 2025 to August 18, 2025 (your actual data collection period)
+    # June 1, 2025 to August 18, 2025 (my actual data collection period)
     dates = pd.date_range(start='2025-06-01', end='2025-08-18', freq='D')
     
-    # Generate realistic patterns based on your actual Renpho data (54.8-57kg range)
-    weight_base = 56.2  # Realistic baseline from your actual data
-    weight_trend = -0.003  # Very gradual weight loss trend observed in your data
+    # Generate realistic patterns based on my actual Renpho data (54.8-57kg range)
+    weight_base = 56.2  # Realistic baseline from my actual data
+    weight_trend = -0.003  # Very gradual weight loss trend observed in my data
     weight = []
     for i in range(len(dates)):
         seasonal = 0.2 * np.sin(2 * np.pi * i / 90)  # Summer variation
         weekly = 0.3 * np.sin(2 * np.pi * i / 7)  # Weekly variation
-        noise = np.random.randn() * 0.35  # Daily variation similar to your data
+        noise = np.random.randn() * 0.35  # Daily variation similar to my data
         weight.append(max(54.5, min(57.5, weight_base + weight_trend * i + seasonal + weekly + noise)))
     
-    # Steps with realistic patterns based on your activity data
+    # Steps with realistic patterns based on my activity data
     steps = []
     activities_per_week = []  # Track weekly activity types
     
     for i, date in enumerate(dates):
-        base = 6000  # Lower baseline for your lifestyle
+        base = 6000  # Lower baseline for my lifestyle
         
-        # Weekly activity pattern based on your actual data
+        # Weekly activity pattern based on my actual data
         week_day = date.weekday()
         if week_day in [0, 2, 4]:  # Mon, Wed, Fri - workout days
             base = 8500  # Higher on workout days
@@ -231,14 +231,14 @@ def load_data():
                                            p=[0.4, 0.25, 0.25, 0.1])
             activities_per_week.append(activity_type)
     
-    # Sleep patterns based on your actual Garmin data (many gaps, 5.5-15h range)
+    # Sleep patterns based on my actual Garmin data (many gaps, 5.5-15h range)
     sleep_hours = []
     for i, date in enumerate(dates):
-        # Add some missing days like in your real data (~30% missing)
+        # Add some missing days like in my real data (~30% missing)
         if np.random.random() < 0.3:
             sleep_hours.append(np.nan)  # Missing data
         else:
-            # Real sleep range from your data: 5h 35min to 15h 45min, average ~8.5h
+            # Real sleep range from my data: 5h 35min to 15h 45min, average ~8.5h
             base = 8.5
             if date.weekday() in [4, 5]:  # Friday, Saturday - longer sleep
                 base = 9.5
@@ -248,7 +248,7 @@ def load_data():
             sleep_val = max(5.5, min(11.0, np.random.normal(base, 1.2)))
             sleep_hours.append(sleep_val)
     
-    # Ensure the last recorded sleep matches your actual data: 7h 22min from Aug 16
+    # Ensure the last recorded sleep matches my actual data: 7h 22min from Aug 16
     # Find the last non-NaN entry and set it to 7.37 hours (7h 22min)
     last_valid_idx = len(sleep_hours) - 1
     while last_valid_idx >= 0 and pd.isna(sleep_hours[last_valid_idx]):
@@ -259,12 +259,12 @@ def load_data():
     # Heart rate with daily patterns
     heart_rate = 65 + 5 * np.sin(2 * np.pi * np.arange(len(dates)) / len(dates)) + np.random.randn(len(dates)) * 3
     
-    # Body composition based on your actual Renpho data ranges
+    # Body composition based on my actual Renpho data ranges
     body_fat = 21.0 - np.arange(len(dates)) * 0.002 + np.random.randn(len(dates)) * 0.15  # 20.3-21.9%
     muscle_mass = 41.6 + np.arange(len(dates)) * 0.001 + np.random.randn(len(dates)) * 0.1  # ~41-42kg
     
-    # Calories and activity adjusted for your actual weight range
-    calories = [s * 0.25 + 1200 + np.random.randint(-150, 150) for s in steps]  # Lower baseline for your size
+    # Calories and activity adjusted for my actual weight range
+    calories = [s * 0.25 + 1200 + np.random.randint(-150, 150) for s in steps]  # Lower baseline for my size
     active_minutes = [s / 100 + np.random.randint(10, 30) for s in steps]
     
     return pd.DataFrame({
@@ -277,7 +277,7 @@ def load_data():
         'body_fat': body_fat,
         'muscle_mass': muscle_mass,
         'active_minutes': active_minutes,
-        'vo2_max': 42 + np.arange(len(dates)) * 0.015 + np.random.randn(len(dates)) * 1.2  # Better for your size
+        'vo2_max': 42 + np.arange(len(dates)) * 0.015 + np.random.randn(len(dates)) * 1.2  # Better for my size
     })
 
 # Load data
@@ -342,7 +342,7 @@ if df is not None and not df.empty:
         sleep_sync_date = pd.to_datetime('2025-08-16').strftime('%b %d')
         st.markdown(create_kpi_card(
             title="Last Recorded Sleep",
-            value="7.4h",  # 7h 22min from your actual Garmin data
+            value="7.4h",  # 7h 22min from my actual Garmin data
             delta=sleep_delta,
             color_theme="lilac",
             icon_name="bedtime",
@@ -459,15 +459,15 @@ if df is not None:
         
         st.plotly_chart(fig2, use_container_width=True)
     
-    # Add Activity Analysis Chart based on your Garmin data
+    # Add Activity Analysis Chart based on my Garmin data
         
-        # Create activity type distribution based on your actual Garmin data
+        # Create activity type distribution based on my actual Garmin data
         activity_types = ['Indoor Cycling', 'Running', 'Strength Training', 'Walking/Hiking', 'Yoga']
-        activity_counts = [12, 6, 3, 2, 3]  # Based on your actual data
+        activity_counts = [12, 6, 3, 2, 3]  # Based on my actual data
         activity_colors = ['#7B1FA2', '#E91E63', '#F57C00', '#2E7D32', '#1976D2']
         
         # Create pie chart for activity distribution
-# Add Activity Analysis Chart based on your Garmin data
+# Add Activity Analysis Chart based on my Garmin data
 with chart_col2:
     st.markdown("""
     <div class="chart-container">
@@ -475,9 +475,9 @@ with chart_col2:
     </div>
     """, unsafe_allow_html=True)
     
-    # Create activity type distribution based on your actual Garmin data
+    # Create activity type distribution based on my actual Garmin data
     activity_types = ['Indoor Cycling', 'Running', 'Strength', 'Hiking  ', 'Yoga']
-    activity_counts = [12, 6, 3, 2, 3]  # Based on your actual data
+    activity_counts = [12, 6, 3, 2, 3]  # Based on my actual data
     activity_colors = ['#7B1FA2', '#E91E63', '#F57C00', '#2E7D32', '#1976D2']
     
     # Create pie chart for activity distribution
@@ -527,11 +527,11 @@ st.markdown("""
 </div>
 """, unsafe_allow_html=True)
 
-# Create timeline chart based on your actual Garmin activities
+# Create timeline chart based on my actual Garmin activities
 activity_dates = pd.date_range(start='2025-06-27', periods=25, freq='2D')  # Every 2 days roughly
 workout_types = ['Indoor Cycling', 'Running', 'Strength Training', 'Hiking', 'Yoga']
 
-# Simulate workout data based on your actual activities
+# Simulate workout data based on my actual activities
 workout_data = []
 colors_map = {'Indoor Cycling': '#7B1FA2', 'Running': '#E91E63', 'Strength Training': '#F57C00', 
               'Hiking': '#2E7D32', 'Yoga': '#1976D2'}

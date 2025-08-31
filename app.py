@@ -191,27 +191,27 @@ def create_kpi_card(title, value, delta, color_theme="pink", icon_name="monitori
 def load_data():
     """Load sample data for demonstration with realistic 2025 date range"""
     np.random.seed(42)
-    # June 1, 2025 to August 18, 2025 (my actual data collection period)
+    # June 1, 2025 to August 18, 2025 (your actual data collection period)
     dates = pd.date_range(start='2025-06-01', end='2025-08-18', freq='D')
     
-    # Generate realistic patterns based on my actual Renpho data (54.8-57kg range)
-    weight_base = 56.2  # Realistic baseline from my actual data
-    weight_trend = -0.003  # Very gradual weight loss trend observed in my data
+    # Generate realistic patterns based on your actual Renpho data (54.8-57kg range)
+    weight_base = 56.2  # Realistic baseline from your actual data
+    weight_trend = -0.003  # Very gradual weight loss trend observed in your data
     weight = []
     for i in range(len(dates)):
         seasonal = 0.2 * np.sin(2 * np.pi * i / 90)  # Summer variation
         weekly = 0.3 * np.sin(2 * np.pi * i / 7)  # Weekly variation
-        noise = np.random.randn() * 0.35  # Daily variation similar to my data
+        noise = np.random.randn() * 0.35  # Daily variation similar to your data
         weight.append(max(54.5, min(57.5, weight_base + weight_trend * i + seasonal + weekly + noise)))
     
-    # Steps with realistic patterns based on my activity data
+    # Steps with realistic patterns based on your activity data
     steps = []
     activities_per_week = []  # Track weekly activity types
     
     for i, date in enumerate(dates):
-        base = 6000  # Lower baseline for my lifestyle
+        base = 6000  # Lower baseline for your lifestyle
         
-        # Weekly activity pattern based on my actual data
+        # Weekly activity pattern based on your actual data
         week_day = date.weekday()
         if week_day in [0, 2, 4]:  # Mon, Wed, Fri - workout days
             base = 8500  # Higher on workout days
@@ -231,14 +231,14 @@ def load_data():
                                            p=[0.4, 0.25, 0.25, 0.1])
             activities_per_week.append(activity_type)
     
-    # Sleep patterns based on my actual Garmin data (many gaps, 5.5-15h range)
+    # Sleep patterns based on your actual Garmin data (many gaps, 5.5-15h range)
     sleep_hours = []
     for i, date in enumerate(dates):
-        # Add some missing days like in my real data (~30% missing)
+        # Add some missing days like in your real data (~30% missing)
         if np.random.random() < 0.3:
             sleep_hours.append(np.nan)  # Missing data
         else:
-            # Real sleep range from my data: 5h 35min to 15h 45min, average ~8.5h
+            # Real sleep range from your data: 5h 35min to 15h 45min, average ~8.5h
             base = 8.5
             if date.weekday() in [4, 5]:  # Friday, Saturday - longer sleep
                 base = 9.5
@@ -248,7 +248,7 @@ def load_data():
             sleep_val = max(5.5, min(11.0, np.random.normal(base, 1.2)))
             sleep_hours.append(sleep_val)
     
-    # Ensure the last recorded sleep matches my actual data: 7h 22min from Aug 16
+    # Ensure the last recorded sleep matches your actual data: 7h 22min from Aug 16
     # Find the last non-NaN entry and set it to 7.37 hours (7h 22min)
     last_valid_idx = len(sleep_hours) - 1
     while last_valid_idx >= 0 and pd.isna(sleep_hours[last_valid_idx]):
@@ -259,12 +259,12 @@ def load_data():
     # Heart rate with daily patterns
     heart_rate = 65 + 5 * np.sin(2 * np.pi * np.arange(len(dates)) / len(dates)) + np.random.randn(len(dates)) * 3
     
-    # Body composition based on my actual Renpho data ranges
+    # Body composition based on your actual Renpho data ranges
     body_fat = 21.0 - np.arange(len(dates)) * 0.002 + np.random.randn(len(dates)) * 0.15  # 20.3-21.9%
     muscle_mass = 41.6 + np.arange(len(dates)) * 0.001 + np.random.randn(len(dates)) * 0.1  # ~41-42kg
     
-    # Calories and activity adjusted for my actual weight range
-    calories = [s * 0.25 + 1200 + np.random.randint(-150, 150) for s in steps]  # Lower baseline for my size
+    # Calories and activity adjusted for your actual weight range
+    calories = [s * 0.25 + 1200 + np.random.randint(-150, 150) for s in steps]  # Lower baseline for your size
     active_minutes = [s / 100 + np.random.randint(10, 30) for s in steps]
     
     return pd.DataFrame({
@@ -277,17 +277,19 @@ def load_data():
         'body_fat': body_fat,
         'muscle_mass': muscle_mass,
         'active_minutes': active_minutes,
-        'vo2_max': 42 + np.arange(len(dates)) * 0.015 + np.random.randn(len(dates)) * 1.2  # Better for my size
+        'vo2_max': 42 + np.arange(len(dates)) * 0.015 + np.random.randn(len(dates)) * 1.2  # Better for your size
     })
 
 # Load data
 df = load_data()
 
 # Main Dashboard Title
-st.markdown("<h1>💪 Fitness Analytics Dashboard</h1>", unsafe_allow_html=True)
+st.markdown("""
+<h1><span class="material-icons-outlined" style="font-size:2.5rem; vertical-align:middle;">fitness_center</span> Fitness Analytics Dashboard</h1>
+""", unsafe_allow_html=True)
 
 # Core Data KPI Cards Section
-st.markdown("## 📊 Core Health Metrics")
+st.markdown('<span class="material-icons-outlined" style="vertical-align:middle; font-size:1.6rem;">bar_chart</span> <span style="font-size:1.3rem; font-weight:600; vertical-align:middle;">Core Health Metrics</span>', unsafe_allow_html=True)
 
 # Create KPI cards with latest data
 if df is not None and not df.empty:
@@ -342,7 +344,7 @@ if df is not None and not df.empty:
         sleep_sync_date = pd.to_datetime('2025-08-16').strftime('%b %d')
         st.markdown(create_kpi_card(
             title="Last Recorded Sleep",
-            value="7.4h",  # 7h 22min from my actual Garmin data
+            value="7.4h",  # 7h 22min from your actual Garmin data
             delta=sleep_delta,
             color_theme="lilac",
             icon_name="bedtime",
@@ -369,7 +371,7 @@ if df is not None and not df.empty:
             sync_date=latest_date
         ), unsafe_allow_html=True)
 
-st.markdown("## 📊 Detailed Analytics & Trends")
+st.markdown('<span class="material-icons-outlined" style="vertical-align:middle; font-size:1.6rem;">analytics</span> <span style="font-size:1.3rem; font-weight:600; vertical-align:middle;">Detailed Analytics & Trends</span>', unsafe_allow_html=True)
 
 if df is not None:
     # Body Composition Analysis - Full Width Section
@@ -382,11 +384,10 @@ if df is not None:
         # Step Count Chart (renamed from Activity Overview)
         st.markdown("""
         <div class="chart-container" style="background: #181920;">
-            <h3 class="chart-title" style="color: #fff;">🚶 Step Count</h3>
+            <h3 class="chart-title" style="color: #fff;"><span class="material-icons-outlined" style="vertical-align:middle;">directions_walk</span> Step Count</h3>
         </div>
         """, unsafe_allow_html=True)
-        
-        # Create weekly aggregated data
+        # ...existing code...
         df_copy = df.copy()
         df_copy['week'] = pd.to_datetime(df_copy['date']).dt.to_period('W')
         weekly_stats = df_copy.groupby('week').agg({
@@ -394,40 +395,30 @@ if df is not None:
             'calories': 'mean', 
             'active_minutes': 'mean'
         }).tail(12)  # Last 12 weeks
-        
-        # Clean data - remove any NaN values
+        # ...existing code...
         weekly_stats = weekly_stats.dropna()
-        
-        # Create readable week labels like "Week 29 (2025)"
         week_labels = []
         for week_period in weekly_stats.index:
-            # Convert period to timestamp to get week number
             week_start = week_period.start_time
-            week_num = week_start.isocalendar()[1]  # ISO week number
+            week_num = week_start.isocalendar()[1]
             year = week_start.year
             week_labels.append(f"Week {week_num} ({year})")
-        
         fig2 = go.Figure()
-        
-        # Weekly steps as bars with darker color
         fig2.add_trace(go.Bar(
             x=week_labels,
             y=weekly_stats['steps'].fillna(0),
-            name='Avg Steps',  # Capitalized for legend
-            marker_color='#1A237E',  # Darker blue
+            name='Avg Steps',
+            marker_color='#1A237E',
             opacity=0.8
         ))
-        
-        # Goal line for steps
         fig2.add_hline(y=10000, line_dash="dash", line_color="#2E7D32",
                       annotation_text="Goal: 10k", 
                       annotation_position="top left",
                       annotation=dict(
-                          xshift=15,  # Move annotation further right from left edge
-                          yshift=8,   # Slightly higher shift
+                          xshift=15,
+                          yshift=8,
                           font=dict(size=13, color="#2E7D32", family="Inter")
                       ))
-        
         fig2.update_layout(
             height=350,
             showlegend=True,
@@ -453,31 +444,29 @@ if df is not None:
                 itemsizing="constant"
             )
         )
-        # Update axis labels to white
         fig2.update_xaxes(title_font=dict(size=14, color="white"), tickfont=dict(color="white"), gridcolor='rgba(255,255,255,0.08)')
         fig2.update_yaxes(title_font=dict(size=14, color="white"), tickfont=dict(color="white"), gridcolor='rgba(255,255,255,0.08)')
-        
         st.plotly_chart(fig2, use_container_width=True)
     
-    # Add Activity Analysis Chart based on my Garmin data
+    # Add Activity Analysis Chart based on your Garmin data
         
-        # Create activity type distribution based on my actual Garmin data
+        # Create activity type distribution based on your actual Garmin data
         activity_types = ['Indoor Cycling', 'Running', 'Strength Training', 'Walking/Hiking', 'Yoga']
-        activity_counts = [12, 6, 3, 2, 3]  # Based on my actual data
+        activity_counts = [12, 6, 3, 2, 3]  # Based on your actual data
         activity_colors = ['#7B1FA2', '#E91E63', '#F57C00', '#2E7D32', '#1976D2']
         
         # Create pie chart for activity distribution
-# Add Activity Analysis Chart based on my Garmin data
+# Add Activity Analysis Chart based on your Garmin data
 with chart_col2:
     st.markdown("""
     <div class="chart-container">
-        <h3 class="chart-title" style="color: #fff;">🏃‍♀️ Activity Type Analysis</h3>
+        <h3 class="chart-title" style="color: #fff;"><span class="material-icons-outlined" style="vertical-align:middle;">directions_run</span> Activity Type Analysis</h3>
     </div>
     """, unsafe_allow_html=True)
     
-    # Create activity type distribution based on my actual Garmin data
+    # Create activity type distribution based on your actual Garmin data
     activity_types = ['Indoor Cycling', 'Running', 'Strength', 'Hiking  ', 'Yoga']
-    activity_counts = [12, 6, 3, 2, 3]  # Based on my actual data
+    activity_counts = [12, 6, 3, 2, 3]  # Based on your actual data
     activity_colors = ['#7B1FA2', '#E91E63', '#F57C00', '#2E7D32', '#1976D2']
     
     # Create pie chart for activity distribution
@@ -523,15 +512,15 @@ with chart_col2:
 # Add Activity Timeline Chart
 st.markdown("""
 <div class="chart-container" style="background: #181920;">
-    <h3 class="chart-title" style="color: #fff;">🏋️‍♀️ Workout Intensity & Performance Timeline</h3>
+    <h3 class="chart-title" style="color: #fff;"><span class="material-icons-outlined" style="vertical-align:middle;">monitor_heart</span> Workout Intensity & Performance Timeline</h3>
 </div>
 """, unsafe_allow_html=True)
 
-# Create timeline chart based on my actual Garmin activities
+# Create timeline chart based on your actual Garmin activities
 activity_dates = pd.date_range(start='2025-06-27', periods=25, freq='2D')  # Every 2 days roughly
 workout_types = ['Indoor Cycling', 'Running', 'Strength Training', 'Hiking', 'Yoga']
 
-# Simulate workout data based on my actual activities
+# Simulate workout data based on your actual activities
 workout_data = []
 colors_map = {'Indoor Cycling': '#7B1FA2', 'Running': '#E91E63', 'Strength Training': '#F57C00', 
               'Hiking': '#2E7D32', 'Yoga': '#1976D2'}
@@ -653,10 +642,10 @@ st.plotly_chart(fig_timeline, use_container_width=True)
 
 # Single tab definition
 tab1, tab2, tab3, tab4 = st.tabs([
-    "📊 Health Metrics Overview",
-    "💤 Sleep Patterns", 
-    "🎯 Goal Progress",
-    "📈 Correlations"
+    "Health Metrics Overview",
+    "Sleep Patterns",
+    "Goal Progress",
+    "Correlations"
 ])
 
 with tab1:
@@ -846,31 +835,27 @@ with tab1:
                     st.plotly_chart(fig_sleep, use_container_width=True)
                 else:
                     st.info("Not enough sleep data for heatmap visualization")
-            
-            with col2:
-                st.markdown("### 📊 Sleep Statistics")
-                sleep_data = df['sleep_hours'].dropna()
-                
-                if not sleep_data.empty:
-                    avg_sleep = sleep_data.mean()
-                    best_night = sleep_data.max()
-                    worst_night = sleep_data.min()
-                    
-                    st.metric("Average Sleep", f"{avg_sleep:.1f} hrs")
-                    st.metric("Best Night", f"{best_night:.1f} hrs")
-                    st.metric("Worst Night", f"{worst_night:.1f} hrs")
-                    
-                    # Sleep recommendation
-                    if avg_sleep < 7:
-                        st.warning("⚠️ Below recommended 7-9 hours")
-                    elif avg_sleep > 9:
-                        st.info("ℹ️ Above typical range")
-                    else:
-                        st.success("✅ Within healthy range")
+        
+        with col2:
+            st.markdown('<span class="material-icons-outlined" style="vertical-align:middle;">bar_chart</span> Sleep Statistics', unsafe_allow_html=True)
+            sleep_data = df['sleep_hours'].dropna()
+            if not sleep_data.empty:
+                avg_sleep = sleep_data.mean()
+                best_night = sleep_data.max()
+                worst_night = sleep_data.min()
+                st.metric("Average Sleep", f"{avg_sleep:.1f} hrs")
+                st.metric("Best Night", f"{best_night:.1f} hrs")
+                st.metric("Worst Night", f"{worst_night:.1f} hrs")
+                # Sleep recommendation
+                if avg_sleep < 7:
+                    st.warning("Below recommended 7-9 hours")
+                elif avg_sleep > 9:
+                    st.info("Above typical range")
                 else:
-                    st.info("No sleep data available for statistics")
-        else:
-            st.info("🛌 No sleep data available to display sleep analysis.")
+                    st.success("Within healthy range")
+            else:
+                st.info("No sleep data available for statistics")
+        # Remove invalid else here; the info message is already handled above for statistics/heatmap
     
     with tab3:
         st.markdown("<br>", unsafe_allow_html=True)
@@ -1084,7 +1069,7 @@ with st.sidebar:
 # Footer with professional styling
 st.markdown("""
 <div style='text-align: center; padding: 2rem; background: #181920; border-radius: 15px; margin-top: 2rem;'>
-    <h3 style='color: #fff; margin-bottom: 1rem;'>💪 Health & Fitness Insights</h3>
+    <h3 style='color: #fff; margin-bottom: 1rem;'><span class='material-icons-outlined' style='font-size:2rem; vertical-align:middle;'>fitness_center</span> Health & Fitness Insights</h3>
     <div style='display: flex; justify-content: space-around; flex-wrap: wrap;'>
         <div style='flex: 1; min-width: 200px; padding: 1rem;'>
             <span class='material-icons-outlined' style='color: #E91E63; font-size: 36px;'>trending_up</span>

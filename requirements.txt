@@ -1,4 +1,4 @@
 streamlit
-pandas
+pandas 3.12
 plotly
 numpy

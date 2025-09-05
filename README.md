@@ -16,7 +16,7 @@ A professional, interactive fitness analytics dashboard built with Streamlit and
 
 1. **Clone the repository:**
    ```bash
-   git clone https://github.com/yourusername/fitness-analytics-dashboard.git
+   git clone https://github.com/BirdyBirch/fitness-analytics-dashboard.git
    cd fitness-analytics-dashboard
    ```
 2. **Install dependencies:**
@@ -29,8 +29,9 @@ A professional, interactive fitness analytics dashboard built with Streamlit and
    ```
 
 ## Data
-- Place your data files in the `data/` directory as needed.
-- The app uses simulated data by default for demonstration.
+- Garmin: Aktivitäten, Schlaf, VO2max
+- Hevy: Krafttrainingsdaten
+- Renpho: Körperzusammensetzung (Gewicht, Körperfett etc.)
 
 ## License
 MIT License
